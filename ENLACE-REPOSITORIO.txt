@@ -1,0 +1,38 @@
+EDUTRACK360 - COMPONENTE FRONTEND
+Repositorio del codigo fuente
+
+Aprendiz.....: Jhonatan Castro
+Programa.....: Analisis y Desarrollo de Software - SENA
+Competencia..: 220501096 - Desarrollar la solucion de software de acuerdo
+               con el diseno y metodologias de desarrollo
+Actividad....: GA7-220501096-AA4 - Codificar el frontend utilizando framework
+
+Evidencia contenida en este repositorio:
+  - GA7-220501096-AA4-EV03  Componente frontend del proyecto formativo
+
+Framework utilizado: React 19 sobre Next.js 16, con TypeScript.
+
+URL del repositorio:
+  https://github.com/JhonatanCastroDev/edutrack360-frontend
+
+Rama principal: main
+
+Contenido:
+  13 pantallas distribuidas en los tres roles del sistema (administrativo,
+  docente y acudiente), mas la pantalla de inicio de sesion, construidas a
+  partir de las historias de usuario y los casos de uso levantados en las
+  evidencias GA2-220501093-AA1-EV02 y GA2-220501093-AA1-EV03.
+
+Como ejecutar el proyecto:
+  npm install
+  npm run dev
+  El sitio queda disponible en http://localhost:3000
+
+Cuentas de demostracion (usuario = contrasena):
+  admin      -> panel administrativo
+  docente    -> panel del docente
+  acudiente  -> portal del acudiente
+
+Nota:
+  Las pantallas trabajan con datos de demostracion. La integracion con el
+  backend Java corresponde a una actividad posterior del proyecto.

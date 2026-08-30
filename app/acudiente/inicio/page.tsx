@@ -1,10 +1,27 @@
 'use client'
+
+/**
+ * Panel de control del rol Acudiente.
+ *
+ * Implementa la historia HU-06 y el caso de uso CU-03: el acudiente consulta
+ * el desempeño de los estudiantes a su cargo. Reúne el resumen de cada uno,
+ * su actividad reciente y las alertas cuando algún indicador se deteriora.
+ *
+ * La observación de la historia pide una interfaz sencilla y orientada al
+ * usuario no técnico; por eso la información se presenta con tarjetas,
+ * porcentajes y colores en lugar de tablas densas.
+ */
+import Link from 'next/link';
 import React from 'react';
-import { Home, Calendar, FileText, User, LogOut, TrendingUp, Clock, Award, AlertCircle, GraduationCap } from 'lucide-react';
+import { Calendar, FileText, TrendingUp, Clock, Award, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Sidebar from '@/components/sidebar';
 
 export default function AcudienteInicio() {
+  // Datos de demostración. Al integrar el backend Java, estos arreglos se
+  // reemplazan por las respuestas de la API; la estructura de cada objeto ya
+  // corresponde a las columnas de las tablas del esquema edutrack360.
   const students = [
     {
       id: 1,
@@ -34,7 +51,7 @@ export default function AcudienteInicio() {
     { id: 1, student: 'Laura Sofía', message: 'Asistencia por debajo del 90%', severity: 'warning' },
   ];
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'good':
         return 'bg-green-100 text-green-700 border-green-200';
@@ -49,57 +66,7 @@ export default function AcudienteInicio() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center shadow-sm">
-              <GraduationCap className="w-6 h-6 text-white" strokeWidth={2} />
-            </div>
-            <h1 className="text-xl font-bold">
-              <span className="text-blue-600">EduTrack</span>
-              <span className="text-gray-900">360</span>
-            </h1>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4">
-          <div className="space-y-1">
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
-              <Home className="w-5 h-5" />
-              Inicio
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <Calendar className="w-5 h-5" />
-              Asistencia
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <FileText className="w-5 h-5" />
-              Calificaciones
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <User className="w-5 h-5" />
-              Perfil Acudiente
-            </button>
-          </div>
-        </nav>
-
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white font-semibold">
-              RG
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">Roberto Gómez</p>
-              <p className="text-xs text-gray-500 truncate">Acudiente</p>
-            </div>
-          </div>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 transition-colors">
-            <LogOut className="w-4 h-4" />
-            Cerrar sesión
-          </button>
-        </div>
-      </div>
+      <Sidebar role="acudiente" />
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
@@ -127,7 +94,9 @@ export default function AcudienteInicio() {
                         <p className="font-medium text-gray-900">{alert.student}</p>
                         <p className="text-sm text-gray-600">{alert.message}</p>
                       </div>
-                      <Button size="sm" variant="outline">Ver Detalles</Button>
+                      <Button asChild size="sm" variant="outline">
+                        <Link href="/acudiente/asistencias">Ver Detalles</Link>
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -193,8 +162,12 @@ export default function AcudienteInicio() {
                           </div>
 
                           <div className="flex gap-2 mt-4">
-                            <Button variant="outline" size="sm" className="flex-1">Ver Asistencia</Button>
-                            <Button variant="outline" size="sm" className="flex-1">Ver Calificaciones</Button>
+                            <Button asChild variant="outline" size="sm" className="flex-1">
+                              <Link href="/acudiente/asistencias">Ver Asistencia</Link>
+                            </Button>
+                            <Button asChild variant="outline" size="sm" className="flex-1">
+                              <Link href="/acudiente/calificaciones">Ver Calificaciones</Link>
+                            </Button>
                           </div>
                         </CardContent>
                       </Card>
@@ -235,13 +208,17 @@ export default function AcudienteInicio() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <Button className="w-full justify-start" variant="outline">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Ver Asistencia
+                    <Button asChild className="w-full justify-start" variant="outline">
+                      <Link href="/acudiente/asistencias">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Ver Asistencia
+                      </Link>
                     </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <FileText className="w-4 h-4 mr-2" />
-                      Ver Calificaciones
+                    <Button asChild className="w-full justify-start" variant="outline">
+                      <Link href="/acudiente/calificaciones">
+                        <FileText className="w-4 h-4 mr-2" />
+                        Ver Calificaciones
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>

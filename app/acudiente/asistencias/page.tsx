@@ -1,13 +1,29 @@
 'use client'
+
+/**
+ * Consulta de la asistencia del estudiante. Rol Acudiente.
+ *
+ * Parte de la historia HU-06 y del caso de uso CU-03. Permite revisar la
+ * asistencia por fecha, por mes y por asignatura, con el resumen acumulado
+ * del período.
+ *
+ * Conceptos de React: renderizado condicional. El detalle solo aparece cuando
+ * hay un estudiante seleccionado, evitando mostrar una tabla vacía sin
+ * contexto.
+ */
 import React, { useState } from 'react';
-import { Home, Calendar, FileText, User, LogOut, Download, ChevronRight, TrendingUp, GraduationCap } from 'lucide-react';
+import { Calendar, Download, ChevronRight, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Sidebar from '@/components/sidebar';
 
 export default function AcudienteAsistencia() {
+  // Datos de demostración. Al integrar el backend Java, estos arreglos se
+  // reemplazan por las respuestas de la API; la estructura de cada objeto ya
+  // corresponde a las columnas de las tablas del esquema edutrack360.
   const [selectedStudent, setSelectedStudent] = useState('');
   const [selectedDate, setSelectedDate] = useState('2024-10-30');
   const [selectedMonth, setSelectedMonth] = useState('10');
@@ -44,7 +60,7 @@ export default function AcudienteAsistencia() {
     { subject: 'Sociales', present: 15, late: 0, absent: 0, percentage: 100 },
   ];
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'Presente':
         return 'bg-green-100 text-green-700';
@@ -57,7 +73,7 @@ export default function AcudienteAsistencia() {
     }
   };
 
-  const getPercentageColor = (percentage) => {
+  const getPercentageColor = (percentage: number) => {
     if (percentage >= 90) return 'text-green-600';
     if (percentage >= 80) return 'text-yellow-600';
     return 'text-red-600';
@@ -71,57 +87,7 @@ export default function AcudienteAsistencia() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center shadow-sm">
-              <GraduationCap className="w-6 h-6 text-white" strokeWidth={2} />
-            </div>
-            <h1 className="text-xl font-bold">
-              <span className="text-blue-600">EduTrack</span>
-              <span className="text-gray-900">360</span>
-            </h1>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4">
-          <div className="space-y-1">
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <Home className="w-5 h-5" />
-              Inicio
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-md">
-              <Calendar className="w-5 h-5" />
-              Asistencia
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <FileText className="w-5 h-5" />
-              Calificaciones
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <User className="w-5 h-5" />
-              Perfil Acudiente
-            </button>
-          </div>
-        </nav>
-
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white font-semibold">
-              RG
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">Roberto Gómez</p>
-              <p className="text-xs text-gray-500 truncate">Acudiente</p>
-            </div>
-          </div>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 transition-colors">
-            <LogOut className="w-4 h-4" />
-            Cerrar sesión
-          </button>
-        </div>
-      </div>
+      <Sidebar role="acudiente" />
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">

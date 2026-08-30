@@ -1,3 +1,8 @@
+// Componente de interfaz generado con shadcn/ui (estilo new-york).
+// Se construye sobre las primitivas accesibles de Radix UI y se adapta al
+// proyecto mediante las variables de color definidas en app/globals.css.
+// Se documenta su procedencia para distinguir el código de terceros del
+// código propio del proyecto.
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

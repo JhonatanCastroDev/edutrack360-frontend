@@ -1,15 +1,59 @@
 'use client'
-import React, { useState } from 'react';
+
+/**
+ * Pantalla de inicio de sesión. Es la ruta raíz de la aplicación.
+ *
+ * Implementa el caso de uso CU-04 en su parte de autenticación: el usuario se
+ * identifica y el sistema lo lleva a la interfaz que corresponde a su rol.
+ *
+ * Advertencia: la validación es simulada. Se compara el usuario contra el
+ * objeto CUENTAS y no se verifica contraseña ni se crea sesión. La
+ * autenticación real se resolverá cuando el frontend consuma el backend Java.
+ *
+ * Conceptos de React que se aplican aquí:
+ *  - El hook `useState` para manejar el estado de cada campo del formulario,
+ *    de modo que el valor mostrado siempre proviene del estado (componentes
+ *    controlados).
+ *  - Manejo de eventos: `onSubmit` en el formulario, `onChange` en los campos
+ *    y `onClick` en los botones de acceso rápido.
+ *  - `useRouter` de Next.js para navegar por código tras validar.
+ *  - Renderizado condicional del mensaje de error y del icono que alterna
+ *    entre mostrar y ocultar la contraseña.
+ */
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, GraduationCap } from 'lucide-react';
 
+// Credenciales de demostración: usuario = contraseña = rol
+const CUENTAS: Record<string, { ruta: string; etiqueta: string }> = {
+  admin: { ruta: '/inicio', etiqueta: 'Administrativo' },
+  docente: { ruta: '/docente/inicio', etiqueta: 'Docente' },
+  acudiente: { ruta: '/acudiente/inicio', etiqueta: 'Acudiente' },
+};
+
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
+  const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogin = () => {
-    alert('Redirigiendo al dashboard...');
+    const cuenta = CUENTAS[usuario.trim().toLowerCase()];
+    if (!cuenta) {
+      setError('Usa una de las cuentas de demostración: admin, docente o acudiente.');
+      return;
+    }
+    setError('');
+    router.push(cuenta.ruta);
+  };
+
+  const accesoRapido = (clave: string) => {
+    setUsuario(clave);
+    setPassword(clave);
+    setError('');
+    router.push(CUENTAS[clave].ruta);
   };
 
   return (
@@ -57,7 +101,13 @@ export default function LoginPage() {
             <p className="text-gray-500 mt-2 text-sm">Plataforma de gestión educativa</p>
           </div>
 
-          <div className="space-y-6">
+          <form
+            className="space-y-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+          >
             <div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-1">Iniciar Sesión</h2>
               <p className="text-gray-500 text-sm">Ingresa tus credenciales para acceder a tu cuenta</p>
@@ -65,13 +115,14 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Email
+                Usuario
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="profesor@edutrack360.com"
+                type="text"
+                value={usuario}
+                onChange={(e) => setUsuario(e.target.value)}
+                placeholder="acudiente"
+                autoComplete="username"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm text-gray-900 placeholder-gray-400 bg-white"
               />
             </div>
@@ -86,6 +137,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
+                  autoComplete="current-password"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm text-gray-900 placeholder-gray-400 bg-white pr-10"
                 />
                 <button
@@ -102,6 +154,10 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {error && (
+              <p className="text-sm text-red-600">{error}</p>
+            )}
+
             <div className="flex items-center justify-between">
               <label className="flex items-center cursor-pointer">
                 <input
@@ -112,23 +168,42 @@ export default function LoginPage() {
                 />
                 <span className="ml-2 text-sm text-gray-700">Recordarme</span>
               </label>
-              <button className="text-sm text-gray-900 hover:underline font-medium">
+              <button type="button" className="text-sm text-gray-900 hover:underline font-medium">
                 ¿Olvidaste tu contraseña?
               </button>
             </div>
 
             <button
-              onClick={handleLogin}
+              type="submit"
               className="w-full bg-gray-900 text-white font-medium py-2 px-4 rounded-md hover:bg-gray-800 transition-colors text-sm"
             >
               Iniciar Sesión
             </button>
+          </form>
+
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              Cuentas de demostración
+            </p>
+            <div className="space-y-2">
+              {Object.entries(CUENTAS).map(([clave, cuenta]) => (
+                <button
+                  key={clave}
+                  type="button"
+                  onClick={() => accesoRapido(clave)}
+                  className="w-full flex items-center justify-between px-3 py-2 border border-gray-200 rounded-md text-sm hover:bg-gray-50 transition-colors"
+                >
+                  <span className="font-medium text-gray-900">{cuenta.etiqueta}</span>
+                  <span className="text-xs text-gray-500 font-mono">{clave} / {clave}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               ¿No tienes una cuenta?{' '}
-              <button className="text-gray-900 hover:underline font-medium">
+              <button type="button" className="text-gray-900 hover:underline font-medium">
                 Contacta al administrador
               </button>
             </p>
@@ -137,7 +212,7 @@ export default function LoginPage() {
 
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-500">
-            © 2024 EduTrack360. Todos los derechos reservados.
+            © 2026 EduTrack360. Todos los derechos reservados.
           </p>
         </div>
       </div>

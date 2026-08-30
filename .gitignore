@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Contexto de trabajo local, no forma parte de la entrega
+CLAUDE.md
+
+# Material de referencia del SENA: no son archivos del proyecto
+Guia_aprendizaje_*.pdf
+HU.pdf
+DIAGRAMAS Y PLANTILLAS.pdf
+
+# Paquetes generados para la entrega
+entregables/
+empaquetar-evidencias.sh

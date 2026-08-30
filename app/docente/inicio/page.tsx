@@ -1,10 +1,23 @@
 'use client'
-import React, { useState } from 'react';
-import { Home, Calendar, FileText, User, LogOut, BookOpen, Users, TrendingUp, Clock, GraduationCap } from 'lucide-react';
+
+/**
+ * Panel de control del rol Docente.
+ *
+ * Presenta al docente sus cursos asignados, sus indicadores y su actividad
+ * reciente, con accesos directos a las dos tareas que realiza a diario:
+ * registrar asistencia y registrar calificaciones.
+ */
+import Link from 'next/link';
+import React from 'react';
+import { Calendar, FileText, BookOpen, Users, TrendingUp, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Sidebar from '@/components/sidebar';
 
 export default function DocenteInicio() {
+  // Datos de demostración. Al integrar el backend Java, estos arreglos se
+  // reemplazan por las respuestas de la API; la estructura de cada objeto ya
+  // corresponde a las columnas de las tablas del esquema edutrack360.
   const courses = [
     { id: 1, name: '10-A', students: 28, subject: 'Matemáticas', schedule: 'Lun-Mie-Vie 8:00-9:30' },
     { id: 2, name: '10-B', students: 25, subject: 'Matemáticas', schedule: 'Mar-Jue 10:00-11:30' },
@@ -26,57 +39,7 @@ export default function DocenteInicio() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center shadow-sm">
-              <GraduationCap className="w-6 h-6 text-white" strokeWidth={2} />
-            </div>
-            <h1 className="text-xl font-bold">
-              <span className="text-blue-600">EduTrack</span>
-              <span className="text-gray-900">360</span>
-            </h1>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4">
-          <div className="space-y-1">
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
-              <Home className="w-5 h-5" />
-              Inicio
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <Calendar className="w-5 h-5" />
-              Asistencia
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <FileText className="w-5 h-5" />
-              Calificaciones
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <User className="w-5 h-5" />
-              Perfil Docente
-            </button>
-          </div>
-        </nav>
-
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white font-semibold">
-              MG
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">María García</p>
-              <p className="text-xs text-gray-500 truncate">Docente - Matemáticas</p>
-            </div>
-          </div>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 transition-colors">
-            <LogOut className="w-4 h-4" />
-            Cerrar sesión
-          </button>
-        </div>
-      </div>
+      <Sidebar role="docente" />
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
@@ -137,7 +100,9 @@ export default function DocenteInicio() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm">Ver Detalles</Button>
+                          <Button asChild variant="outline" size="sm">
+                            <Link href="/docente/calificaciones">Ver Detalles</Link>
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -176,13 +141,17 @@ export default function DocenteInicio() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <Button className="w-full justify-start" variant="outline">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Registrar Asistencia
+                    <Button asChild className="w-full justify-start" variant="outline">
+                      <Link href="/docente/asistencias">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Registrar Asistencia
+                      </Link>
                     </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <FileText className="w-4 h-4 mr-2" />
-                      Registrar Calificaciones
+                    <Button asChild className="w-full justify-start" variant="outline">
+                      <Link href="/docente/calificaciones">
+                        <FileText className="w-4 h-4 mr-2" />
+                        Registrar Calificaciones
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>

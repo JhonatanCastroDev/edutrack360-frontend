@@ -1,13 +1,32 @@
 'use client'
+
+/**
+ * Registro y edición de la asistencia diaria. Rol Docente.
+ *
+ * Implementa la historia HU-01 y el caso de uso CU-01. El flujo reproduce el
+ * definido en el caso de uso: el docente accede a la sección, selecciona la
+ * fecha, visualiza la lista de estudiantes, marca su estado y guarda.
+ *
+ * La observación de la historia de usuario, que pide permitir la corrección de
+ * registros equivocados, se resuelve con el modo de edición controlado por el
+ * estado `isEditing`.
+ *
+ * Los estados de asistencia son los cuatro definidos en la base de datos:
+ * Presente, Ausente, Tarde y Excusa.
+ */
 import React, { useState } from 'react';
-import { Home, Calendar, FileText, User, LogOut, Download, Search, Edit2, Save, GraduationCap } from 'lucide-react';
+import { Calendar, Download, Search, Edit2, Save } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Sidebar from '@/components/sidebar';
 
 export default function DocenteAsistencia() {
+  // Datos de demostración. Al integrar el backend Java, estos arreglos se
+  // reemplazan por las respuestas de la API; la estructura de cada objeto ya
+  // corresponde a las columnas de las tablas del esquema edutrack360.
   const [selectedCourse, setSelectedCourse] = useState('');
   const [selectedDate, setSelectedDate] = useState('2024-10-30');
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,15 +51,15 @@ export default function DocenteAsistencia() {
   ];
 
   const [attendance, setAttendance] = useState(
-    students.reduce((acc, student) => ({
+    students.reduce<Record<number, string>>((acc, student) => ({
       ...acc,
       [student.id]: student.status
     }), {})
   );
 
   const getStatusCount = () => {
-    const counts = { Presente: 0, Ausente: 0, Tarde: 0 };
-    Object.values(attendance).forEach(status => {
+    const counts: Record<string, number> = { Presente: 0, Ausente: 0, Tarde: 0 };
+    Object.values(attendance).forEach((status) => {
       counts[status]++;
     });
     return counts;
@@ -56,57 +75,7 @@ export default function DocenteAsistencia() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center shadow-sm">
-              <GraduationCap className="w-6 h-6 text-white" strokeWidth={2} />
-            </div>
-            <h1 className="text-xl font-bold">
-              <span className="text-blue-600">EduTrack</span>
-              <span className="text-gray-900">360</span>
-            </h1>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4">
-          <div className="space-y-1">
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <Home className="w-5 h-5" />
-              Inicio
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-md">
-              <Calendar className="w-5 h-5" />
-              Asistencia
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <FileText className="w-5 h-5" />
-              Calificaciones
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <User className="w-5 h-5" />
-              Perfil Docente
-            </button>
-          </div>
-        </nav>
-
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white font-semibold">
-              MG
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">María García</p>
-              <p className="text-xs text-gray-500 truncate">Docente - Matemáticas</p>
-            </div>
-          </div>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 transition-colors">
-            <LogOut className="w-4 h-4" />
-            Cerrar sesión
-          </button>
-        </div>
-      </div>
+      <Sidebar role="docente" />
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">

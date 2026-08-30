@@ -1,14 +1,35 @@
 'use client'
+
+/**
+ * Formulario de registro y gestión de usuarios. Rol Administrativo.
+ *
+ * Implementa la historia de usuario HU-05 y el caso de uso CU-04: el
+ * administrador crea usuarios asignándoles un rol, que es lo que determina a
+ * qué funcionalidades tendrá acceso cada persona.
+ *
+ * Los campos reproducen las columnas de la tabla `usuario` del esquema
+ * edutrack360: tipo y número de documento, primer y segundo nombre, primer y
+ * segundo apellido, correo, teléfono, dirección, rol y notas.
+ *
+ * Conceptos de React: componentes controlados. Cada campo guarda su valor en
+ * el estado con `useState` y lo devuelve por la propiedad `value`, de modo que
+ * el estado es siempre la única fuente de verdad de lo que ve el usuario.
+ */
+import Link from 'next/link';
 import React, { useState } from 'react';
-import { Home, Calendar, FileText, Users, Settings, LogOut, Plus, Edit, List, ChevronLeft, ChevronDown, GraduationCap } from 'lucide-react';
+import { Plus, Edit, List, ChevronLeft } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import Sidebar from '@/components/sidebar';
 
 export default function UsersPage() {
+  // Datos de demostración. Al integrar el backend Java, estos arreglos se
+  // reemplazan por las respuestas de la API; la estructura de cada objeto ya
+  // corresponde a las columnas de las tablas del esquema edutrack360.
   const [firstName, setFirstName] = useState('Jhonatan');
   const [secondName, setSecondName] = useState('Felipe');
   const [firstLastName, setFirstLastName] = useState('Castro');
@@ -22,64 +43,7 @@ export default function UsersPage() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        {/* Logo */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center shadow-sm">
-              <GraduationCap className="w-6 h-6 text-white" strokeWidth={2} />
-            </div>
-            <h1 className="text-xl font-bold">
-              <span className="text-blue-600">EduTrack</span>
-              <span className="text-gray-900">360</span>
-            </h1>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className="space-y-1">
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <Home className="w-5 h-5" />
-              Inicio
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <Calendar className="w-5 h-5" />
-              Asistencias
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-              <FileText className="w-5 h-5" />
-              Calificaciones
-            </button>
-            <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
-              <Users className="w-5 h-5" />
-              Usuarios
-            </button>
-          </div>
-        </nav>
-
-        {/* User Profile */}
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white font-semibold">
-              JC
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">Jhonatan Castro</p>
-              <p className="text-xs text-gray-500 truncate">jjcastro.pf@teacchapp...</p>
-            </div>
-          </div>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100 transition-colors mb-1">
-            <Settings className="w-4 h-4" />
-            Configuración
-          </button>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50 transition-colors">
-            <LogOut className="w-4 h-4" />
-            Cerrar sesión
-          </button>
-        </div>
-      </div>
+      <Sidebar role="admin" />
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
@@ -97,9 +61,11 @@ export default function UsersPage() {
               <h1 className="text-3xl font-bold text-gray-900">Usuarios</h1>
               <p className="text-gray-500 mt-1">Gestionar</p>
             </div>
-            <Button variant="outline" className="flex items-center gap-2">
-              <ChevronLeft className="w-4 h-4" />
-              Volver al Inicio
+            <Button asChild variant="outline" className="flex items-center gap-2">
+              <Link href="/inicio">
+                <ChevronLeft className="w-4 h-4" />
+                Volver al Inicio
+              </Link>
             </Button>
           </div>
 
