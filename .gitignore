@@ -51,3 +51,6 @@ DIAGRAMAS Y PLANTILLAS.pdf
 # Paquetes generados para la entrega
 entregables/
 empaquetar-evidencias.sh
+
+# Documentos de las evidencias: se entregan aparte, no van en el repositorio
+*.docx
